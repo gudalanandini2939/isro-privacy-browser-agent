@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+font-family: Arial;
+width: 280px;
+padding: 15px;
+background: #f4f4f4;
+}
+h2 {
+font-size: 16px;
+margin: 0 0 10px 0;
+color: #1a1a1a;
+}
+.row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 6px 0;
+border-bottom: 1px solid #e0e0e0;
+font-size: 13px;
+}
+.label { color: #444; }
+.value { font-weight: bold; }
+.on { color: #1a8a1a; }
+.off { color: #c00; }
+button {
+width: 100%;
+padding: 10px;
+margin-top: 12px;
+cursor: pointer;
+background: #1a1a1a;
+color: white;
+border: none;
+border-radius: 6px;
+}
+</style>
+</head>
+<body>
+<h2>ISRO Privacy Dashboard</h2>
+<div id="dashboard">
+<div class="row"><span class="label">Local Perception</span><span class="value" id="localPerception">-</span></div>
+<div class="row"><span class="label">PII Detection</span><span class="value" id="piiDetection">-</span></div>
+<div class="row"><span class="label">Redaction</span><span class="value" id="redaction">-</span></div>
+<div class="row"><span class="label">Raw Screenshot Sent</span><span class="value" id="rawScreenshot">-</span></div>
+<div class="row"><span class="label">Sanitized Context</span><span class="value" id="sanitizedContext">-</span></div>
+<div class="row"><span class="label">Action Validation</span><span class="value" id="actionValidation">-</span></div>
+<div class="row"><span class="label">Execution</span><span class="value" id="execution">-</span></div>
+<div class="row"><span class="label">PII Items Found</span><span class="value" id="piiCount">-</span></div>
+<div class="row"><span class="label">Latency</span><span class="value" id="latency">-</span></div>
+<div class="row"><span class="label">Last Run</span><span class="value" id="lastRun">-</span></div>
+</div>
+<button id="start">Re-run Agent</button>
+</body>
+<script src="popup.js"></script>
+</html>
