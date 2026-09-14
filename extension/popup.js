@@ -48,3 +48,48 @@ renderDashboard(result.dashboardData);
 });
 }, 1000);
 });
+
+document.getElementById("ocrBtn").addEventListener("click", async () => {
+const statusEl = document.getElementById("ocrStatus");
+statusEl.textContent = "Capturing screenshot...";
+
+try {
+const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+chrome.tabs.captureVisibleTab(null, { format: "png" }, async (dataUrl) => {
+if (chrome.runtime.lastError || !dataUrl) {
+statusEl.textContent = "Screenshot failed: " + (chrome.runtime.lastError?.message || "unknown error");
+return;
+}
+
+statusEl.textContent = "Reading text from image (this can take a few seconds)...";
+
+try {
+const result = await Tesseract.recognize(dataUrl, "eng", {
+workerPath: chrome.runtime.getURL("worker.min.js"),
+corePath: chrome.runtime.getURL("tesseract-core-simd-lstm.wasm.js"),
+langPath: chrome.runtime.getURL(""),
+gzip: false
+});
+const extractedText = result.data.text;
+
+const emails = extractedText.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) || [];
+const phones = extractedText.match(/(?:\+91[\s-]?)?[6-9]\d{9}/g) || [];
+const cards = extractedText.match(/\b(?:\d[ -]?){13,16}\b/g) || [];
+
+const foundCount = emails.length + phones.length + cards.length;
+
+statusEl.textContent =
+`OCR complete. Found ${foundCount} PII item(s) inside the image (Emails: ${emails.length}, Phones: ${phones.length}, Card-like: ${cards.length}).`;
+
+console.log("OCR extracted text:", extractedText);
+console.log("OCR PII found:", { emails, phones, cards });
+} catch (ocrErr) {
+statusEl.textContent = "OCR processing failed: " + ocrErr.message;
+console.log("OCR error:", ocrErr);
+}
+});
+} catch (err) {
+statusEl.textContent = "Error: " + err.message;
+}
+});
