@@ -53,15 +53,15 @@ if (aadhaar) aadhaar.forEach(value =>
 results.push({type:"AADHAAR_LIKE", value})
 );
 
-const addressMatch = pageText.match(
-/Address:\s*(.+)/i
-);
-if (addressMatch) results.push({type:"ADDRESS", value: addressMatch[1]});
-
-const nameMatch = pageText.match(
-/Name:\s*(.+)/i
-);
-if (nameMatch) results.push({type:"NAME", value: nameMatch[1]});
+document.querySelectorAll('.info-row').forEach(row => {
+const spans = row.querySelectorAll('span');
+if (spans.length === 2) {
+const label = spans[0].innerText.trim().toLowerCase();
+const value = spans[1].innerText.trim();
+if (label === "name") results.push({type:"NAME", value});
+if (label === "address") results.push({type:"ADDRESS", value});
+} 
+});
 
 document.querySelectorAll('input[type="password"]').forEach(() =>
 results.push({type:"PASSWORD", value:"[PASSWORD]"})
